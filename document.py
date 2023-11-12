@@ -24,11 +24,10 @@ class Document:
             logging.info("Reading the file {}".format(file))
             pdf = PdfReader(file)
             text = " ".join(page.extract_text() for page in pdf.pages)
-        self.text = text
         if dump_text:
             with open(dump_path, "w") as text_file:
                 text_file.write(text)
-        logging.info("Loaded")
+                return text
 
     def clean(self):
         # TODO: Implement pre-processing

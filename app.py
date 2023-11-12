@@ -3,13 +3,19 @@ import logging
 import os
 from flask import Flask, flash, request, redirect, url_for, jsonify
 from werkzeug.utils import secure_filename
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from main import store, search
 
 UPLOAD_FOLDER = "./raw_files"
 ALLOWED_EXTENSIONS = {'pdf'}  # {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
+
 app = Flask(__name__)
+app.config['MAX_CONTENT_LENGTH'] = 5 * 1000 * 1000
 CORS(app, resources={r"/*": {"origins": "*"}})
+limiter = Limiter(get_remote_address, app=app)
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 logging.basicConfig(level="INFO")
@@ -39,6 +45,7 @@ def allowed_file(filename):
 
 
 @app.route('/file', methods=['POST'])
+@limiter.limit("10 per hour")
 def upload_file():
     # check if the post request has the file part
     if 'file' not in request.files:
@@ -56,9 +63,13 @@ def upload_file():
         file.save(path)
         doc_name = store(path)
         return jsonify({"status": 0, "document": doc_name}), 201
+    else:
+        return error_response("Invalid file type. Only PDF file are accepted.", 400)
+
 
 
 @app.route('/answer', methods=['GET'])
+@limiter.limit("10 per minute")
 def get_answer():
     phrase = request.args.get('phrase', type=str)
     document = request.args.get('document', type=str)

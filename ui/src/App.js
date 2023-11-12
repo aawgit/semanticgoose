@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
+  Alert,
   Container,
   Typography,
   TextField,
@@ -14,6 +15,7 @@ import {
 import axios from 'axios';
 
 const API_KEY = "30cf50c0-c4b9-4b5e-be09-f971c7a36d97"
+const RATE_LIMIT_MESSAGE = 'Sorry, rate limit is exceeded. Please try again later or contact sales@wordgoose.com to upgrade to an unlimited plan.'
 
 axios.defaults.headers.common['API-KEY'] = API_KEY;
 
@@ -24,6 +26,8 @@ function App() {
   const [uploading, setUploading] = useState(false);
   const [uploaded, setUploaded] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [uploadErrorMessage, setUploadErrorMessage] = useState("");
+  const [questionErrorMessage, setQuestionErrorMessage] = useState("");
   // const [question, setQuestion] = useState(null);
   const [answer, setAnswer] = useState([]);
   const [selectedSource, setSelectedSource] = useState('RabbitMQ'); // Default selection
@@ -51,9 +55,12 @@ function App() {
         setLoading(false);
         setAnswer([]); // Update with the actual response data
       }
-    } catch (error) {
+      setQuestionErrorMessage("")
+    } catch (err) {
       setLoading(false);
-      console.error('API request failed:', error);
+      if (err.response?.status === 429) {
+        setQuestionErrorMessage(RATE_LIMIT_MESSAGE)
+      }
       setAnswer([]);
     }
   };
@@ -76,8 +83,11 @@ function App() {
         setUploading(false)
         setUploaded(true)
         setDocument(response.data.document)
-        console.log(response.data)
+        setUploadErrorMessage('')
       } catch (err) {
+        if (err.response?.status === 429) {
+          setUploadErrorMessage(RATE_LIMIT_MESSAGE)
+        }
         console.log(err);
       }
     } else {
@@ -116,7 +126,11 @@ function App() {
           </Button>
         </div>
       </div>
-
+      {uploadErrorMessage != '' ? (
+        <div>
+          <Alert severity="error">{uploadErrorMessage}</Alert>
+        </div>
+      ) : null}
       <div>
         {/* <input type="file" onChange={handleFileChange} /> */}
         {/* <button onClick={handleFileUpload}>Upload</button> */}
@@ -129,7 +143,7 @@ function App() {
         label="Question"
         value={inputText}
         onChange={handleInputChange}
-        onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
+        onKeyPress={(e) => e.key === 'Enter' && !isSubmitDisabled() && handleSubmit()}
         style={{ textAlign: 'center', marginTop: '16px' }}
       />
       <div style={{ textAlign: 'center', marginTop: '16px' }}>
@@ -146,19 +160,24 @@ function App() {
           )}
         </Button>
       </div>
-      {answer.length===0 ? (
+      {questionErrorMessage != '' ? (
+        <div>
+          <Alert severity="error">{questionErrorMessage}</Alert>
+        </div>
+      ) : null}
+      {answer.length === 0 ? (
         <div style={{ textAlign: 'center', marginTop: '16px' }}>
           {/* <CircularProgress /> */}
         </div>
       ) : (
-        answer.map(a=>{
+        answer.map(a => {
           return <TextareaAutosize
-          rowsmin={10}
-          style={{ width: '100%', marginTop: '16px' }}
-          placeholder=""
-          value={a.phrase}
-          readOnly
-        />
+            rowsmin={10}
+            style={{ width: '100%', marginTop: '16px' }}
+            placeholder=""
+            value={a.phrase}
+            readOnly
+          />
         })
         // <p>"hi"</p>
 
