@@ -1,4 +1,4 @@
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import logging
 import os
 from flask import Flask, flash, request, redirect, url_for, jsonify
@@ -46,6 +46,7 @@ def allowed_file(filename):
 
 @app.route('/file', methods=['POST'])
 @limiter.limit("10 per hour")
+@cross_origin()
 def upload_file():
     # check if the post request has the file part
     if 'file' not in request.files:
@@ -70,6 +71,7 @@ def upload_file():
 
 @app.route('/answer', methods=['GET'])
 @limiter.limit("10 per minute")
+@cross_origin()
 def get_answer():
     phrase = request.args.get('phrase', type=str)
     document = request.args.get('document', type=str)

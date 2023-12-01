@@ -45,7 +45,7 @@ function App() {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:5000/answer", { params: { phrase: inputText, document } });
+      const response = await axios.get("http://http://semanticgoose-production.up.railway.app/answer", { params: { phrase: inputText, document } });
 
       if (response.status === 200) {
         setAnswer(response.data.answer)
@@ -102,11 +102,11 @@ function App() {
         Wordgoose
       </Typography>
       <Typography variant="body1" align="left" paragraph>
-        Wordgoose is your software documentation companion for simplifying the way you explore libraries, modules, etc.;. We're here to make your coding journey smoother.
+        Wordgoose is your document companion for simplifying the way you explore them.
       </Typography>
       <Typography variant="body1" align="left" paragraph>
-        We currently support <a href="https://www.rabbitmq.com/">RabbitMQ</a> documentation. So, if you want to know about the message broker, we've got you covered.
-        For example, you can ask, <i>"What's a dead letter exchange?"</i>
+        You can upload a PDF document and find relevant information to the topic you are interested in.
+        After uploading the document, enter the topic you want to find. That's it. WG will run a semantic search and give you the most relevant results.
       </Typography>
 
       <div style={{ textAlign: 'center', marginTop: '16px' }}>
