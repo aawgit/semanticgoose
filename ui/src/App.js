@@ -106,7 +106,7 @@ function App() {
       </Typography>
       <Typography variant="body1" align="left" paragraph>
         You can upload a PDF document and find relevant information to the topic you are interested in.
-        After uploading the document, enter the topic you want to find. That's it. WG will run a semantic search and give you the most relevant results.
+        After uploading the document, enter the topic you want to find. That's it. WG will run a <a href="https://en.wikipedia.org/wiki/Semantic_search">semantic search</a> and give you the most relevant results.
       </Typography>
 
       <div style={{ textAlign: 'center', marginTop: '16px' }}>
@@ -140,7 +140,7 @@ function App() {
       <TextField
         fullWidth
         variant="outlined"
-        label="Question"
+        label="Question/ topic"
         value={inputText}
         onChange={handleInputChange}
         onKeyPress={(e) => e.key === 'Enter' && !isSubmitDisabled() && handleSubmit()}
