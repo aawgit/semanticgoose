@@ -79,7 +79,7 @@ function App() {
         selectedFile,
         selectedFile.name);
       try {
-        const response = await axios.post('http://localhost:5000/file', formData);
+        const response = await axios.post('http://semanticgoose-production.up.railway.app/file', formData);
         setUploading(false)
         setUploaded(true)
         setDocument(response.data.document)
