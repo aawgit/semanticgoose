@@ -11,7 +11,7 @@ UPLOAD_FOLDER = "./raw_files"
 ALLOWED_EXTENSIONS = {'pdf'}  # {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+CORS(app, resources={r"/api/*": {"origins": "*", "allow_headers": "*", "expose_headers": "*"}})
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1000 * 1000
 limiter = Limiter(get_remote_address, app=app)
 
@@ -36,10 +36,6 @@ def validate_app_id():
             app_id = request.headers.get('API-KEY')
             if app_id is None or app_id != valid_app_id:
                 return error_response("Unauthorized", 401)
-    else:
-        # This part is an attemp to allow CORS and not related to app ID.
-        # TODO: Refactor if works
-        return Response()
 
 
 def allowed_file(filename):
