@@ -1,7 +1,7 @@
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 import logging
 import os
-from flask import Flask, flash, request, redirect, url_for, jsonify
+from flask import Flask, flash, request, jsonify, Response
 from werkzeug.utils import secure_filename
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -10,11 +10,9 @@ from main import store, search
 UPLOAD_FOLDER = "./raw_files"
 ALLOWED_EXTENSIONS = {'pdf'}  # {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
-
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1000 * 1000
 CORS(app, resources={r"/*": {"origins": "*"}})
-app.config['CORS_HEADERS'] = 'Content-Type'
 limiter = Limiter(get_remote_address, app=app)
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -38,6 +36,10 @@ def validate_app_id():
             app_id = request.headers.get('API-KEY')
             if app_id is None or app_id != valid_app_id:
                 return error_response("Unauthorized", 401)
+    else:
+        # This part is an attemp to allow CORS and not related to app ID.
+        # TODO: Refactor if works
+        return Response()
 
 
 def allowed_file(filename):
@@ -47,7 +49,6 @@ def allowed_file(filename):
 
 @app.route('/file', methods=['POST'])
 @limiter.limit("10 per hour")
-@cross_origin()
 def upload_file():
     # check if the post request has the file part
     if 'file' not in request.files:
@@ -69,15 +70,13 @@ def upload_file():
         return error_response("Invalid file type. Only PDF file are accepted.", 400)
 
 
-
 @app.route('/answer', methods=['GET'])
 @limiter.limit("10 per minute")
-@cross_origin()
 def get_answer():
     phrase = request.args.get('phrase', type=str)
     document = request.args.get('document', type=str)
     answer = search(phrase, document)
-    return jsonify({"answer": [{"page": 1, "phrase": phrase } for phrase in answer[0]]}), 200
+    return jsonify({"answer": [{"page": 1, "phrase": phrase} for phrase in answer[0]]}), 200
 
 
 if __name__ == '__main__':
