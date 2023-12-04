@@ -1,7 +1,7 @@
 from flask_cors import CORS
 import logging
 import os
-from flask import Flask, flash, request, jsonify, Response
+from flask import Flask, flash, request, jsonify, Response, make_response
 from werkzeug.utils import secure_filename
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -11,7 +11,7 @@ UPLOAD_FOLDER = "./raw_files"
 ALLOWED_EXTENSIONS = {'pdf'}  # {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "*", "allow_headers": "*", "expose_headers": "*"}})
+# CORS(app, resources={r"/api/*": {"origins": "*", "allow_headers": "*", "expose_headers": "*"}})
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1000 * 1000
 limiter = Limiter(get_remote_address, app=app)
 
@@ -28,6 +28,12 @@ def error_response(message, status_code):
     response.status_code = status_code
     return response
 
+def build_preflight_response():
+    response = make_response()
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add('Access-Control-Allow-Headers', "*")
+    response.headers.add('Access-Control-Allow-Methods', "*")
+    return response
 
 @app.before_request
 def validate_app_id():
@@ -36,6 +42,8 @@ def validate_app_id():
             app_id = request.headers.get('API-KEY')
             if app_id is None or app_id != valid_app_id:
                 return error_response("Unauthorized", 401)
+    else:
+        return build_preflight_response()
 
 
 def allowed_file(filename):

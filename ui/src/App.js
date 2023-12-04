@@ -45,7 +45,7 @@ function App() {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://http://semanticgoose-production.up.railway.app/answer", { params: { phrase: inputText, document } });
+      const response = await axios.get("https://semanticgoose.onrender.com/answer", { params: { phrase: inputText, document } });
 
       if (response.status === 200) {
         setAnswer(response.data.answer)
@@ -79,7 +79,7 @@ function App() {
         selectedFile,
         selectedFile.name);
       try {
-        const response = await axios.post('http://semanticgoose-production.up.railway.app/file', formData);
+        const response = await axios.post('https://semanticgoose.onrender.com/file', formData);
         setUploading(false)
         setUploaded(true)
         setDocument(response.data.document)
