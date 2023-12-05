@@ -16,7 +16,7 @@ import axios from 'axios';
 
 const API_KEY = "30cf50c0-c4b9-4b5e-be09-f971c7a36d97"
 const RATE_LIMIT_MESSAGE = 'Sorry, rate limit is exceeded. Please try again later or contact sales@wordgoose.com to upgrade to an unlimited plan.'
-
+// TODO: request entity too large error. code 413
 axios.defaults.headers.common['API-KEY'] = API_KEY;
 
 function App() {
@@ -31,7 +31,7 @@ function App() {
   // const [question, setQuestion] = useState(null);
   const [answer, setAnswer] = useState([]);
   const [selectedSource, setSelectedSource] = useState('RabbitMQ'); // Default selection
-  const apiHost = 'http://localhost'; // Update with your actual API endpoint
+  const apiHost = 'http://localhost:5000'; // https://semanticgoose.onrender.com
 
   const handleInputChange = (e) => {
     setInputText(e.target.value);
@@ -45,7 +45,7 @@ function App() {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("https://semanticgoose.onrender.com/answer", { params: { phrase: inputText, document } });
+      const response = await axios.get(`${apiHost}/answer`, { params: { phrase: inputText, document } });
 
       if (response.status === 200) {
         setAnswer(response.data.answer)
@@ -79,7 +79,7 @@ function App() {
         selectedFile,
         selectedFile.name);
       try {
-        const response = await axios.post('https://semanticgoose.onrender.com/file', formData);
+        const response = await axios.post(`${apiHost}/file`, formData);
         setUploading(false)
         setUploaded(true)
         setDocument(response.data.document)
