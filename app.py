@@ -11,7 +11,7 @@ UPLOAD_FOLDER = "./raw_files"
 ALLOWED_EXTENSIONS = {'pdf'}  # {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*", "allow_headers": "*", "expose_headers": "*"}})
+# CORS(app, resources={r"/*": {"origins": "*", "allow_headers": "*", "expose_headers": "*"}})
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1000 * 1000
 limiter = Limiter(get_remote_address, app=app)
 

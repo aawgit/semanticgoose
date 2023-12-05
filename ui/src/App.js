@@ -31,7 +31,7 @@ function App() {
   // const [question, setQuestion] = useState(null);
   const [answer, setAnswer] = useState([]);
   const [selectedSource, setSelectedSource] = useState('RabbitMQ'); // Default selection
-  const apiHost = 'http://localhost:5000'; // https://semanticgoose.onrender.com
+  const apiHost = 'http://semanticgoose-production.up.railway.app' // 'http://localhost:5000'; // https://semanticgoose.onrender.com
 
   const handleInputChange = (e) => {
     setInputText(e.target.value);
