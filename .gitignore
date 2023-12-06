@@ -160,7 +160,9 @@ cython_debug/
 #.idea/
 
 /raw_files/*
+!raw_files/.gitkeep
 /text_files/*
+!text_files/.gitkeep
 /vector_db/storage/*
 
 .idea
