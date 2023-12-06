@@ -12,6 +12,7 @@ ALLOWED_EXTENSIONS = {'pdf'}  # {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
 # CORS(app, resources={r"/*": {"origins": "*", "allow_headers": "*", "expose_headers": "*"}})
+CORS(app, origins=['http://localhost:3000', 'https://example.com'])
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1000 * 1000
 limiter = Limiter(get_remote_address, app=app)
 
@@ -42,8 +43,8 @@ def validate_app_id():
             app_id = request.headers.get('API-KEY')
             if app_id is None or app_id != valid_app_id:
                 return error_response("Unauthorized", 401)
-    else:
-        return build_preflight_response()
+    # else:
+    #     return build_preflight_response()
 
 
 def allowed_file(filename):
