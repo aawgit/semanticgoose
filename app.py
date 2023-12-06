@@ -5,7 +5,7 @@ from flask import Flask, flash, request, jsonify, Response, make_response
 from werkzeug.utils import secure_filename
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from main import store, search
+# from main import store, search
 
 UPLOAD_FOLDER = "./raw_files"
 ALLOWED_EXTENSIONS = {'pdf'}  # {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
