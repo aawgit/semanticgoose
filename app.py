@@ -68,7 +68,8 @@ def upload_file():
         filename = secure_filename(file.filename)
         path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(path)
-        doc_name = store(path)
+        # TODO: Uncomment below line after testing
+        doc_name = 'tmp' # store(path)
         return jsonify({"status": 0, "document": doc_name}), 201
     else:
         return error_response("Invalid file type. Only PDF file are accepted.", 400)
@@ -79,7 +80,7 @@ def upload_file():
 def get_answer():
     phrase = request.args.get('phrase', type=str)
     document = request.args.get('document', type=str)
-    answer = search(phrase, document)
+    answer = ['test']# search(phrase, document)
     return jsonify({"answer": [{"page": 1, "phrase": phrase} for phrase in answer[0]]}), 200
 
 
