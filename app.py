@@ -5,7 +5,7 @@ from flask import Flask, flash, request, jsonify, Response, make_response
 from werkzeug.utils import secure_filename
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-# from main import store, search
+from main import store, search
 
 UPLOAD_FOLDER = "./raw_files"
 ALLOWED_EXTENSIONS = {'pdf'}  # {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
@@ -70,7 +70,7 @@ def upload_file():
         path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(path)
         # TODO: Uncomment below line after testing
-        doc_name = 'tmp' # store(path)
+        doc_name = store(path)
         return jsonify({"status": 0, "document": doc_name}), 201
     else:
         return error_response("Invalid file type. Only PDF file are accepted.", 400)
@@ -81,7 +81,7 @@ def upload_file():
 def get_answer():
     phrase = request.args.get('phrase', type=str)
     document = request.args.get('document', type=str)
-    answer = ['test']# search(phrase, document)
+    answer = search(phrase, document)
     return jsonify({"answer": [{"page": 1, "phrase": phrase} for phrase in answer[0]]}), 200
 
 
